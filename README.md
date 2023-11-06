@@ -1,58 +1,58 @@
-# WalkerRL
+# Reinforcement Learning Algorithms for Walker2d
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/MMahdiSetak/WalkerRL/blob/main/LICENSE)
 
 This repository contains implementations of three reinforcement learning algorithms: Double Deep Q-Network (DDQN), Twin
-Delayed DDPG (TD3), and Soft Actor-Critic (SAC). These algorithms have been applied to the `Walker2d-v2` environment
-from OpenAI Gym, showcasing different strategies to solve a complex control task with a bipedal robot.
+Delayed DDPG (TD3), and Soft Actor-Critic (SAC). These algorithms are applied to the `Walker2d-v2` environment from
+OpenAI Gym, demonstrating various strategies to address a complex control task with a bipedal robot.
 
 ## Installation
 
-To set up the project environment to run the code, follow these steps:
+Follow these steps to set up the project environment and run the code:
 
-1. Clone the repository:
+1. Clone this repository to your local machine:
    ```bash
-   git clone https://github.com/yourusername/rl-walker2d.git
-   cd rl-walker2d
+   git clone https://github.com/MMahdiSetak/WalkerRL.git
    ```
 
-2. Install the required dependencies:
+2. Navigate to the project directory and install the required libraries using the provided `requirements.txt` file:
    ```bash
    pip install -r requirements.txt
    ```
 
 ## Usage
 
-To train the agents with the default settings, run the following command:
+Run the following command to train the agents with the default settings:
 
 ```bash
 python main.py
 ```
 
-Common hyperparameters can be set in BaseAgent class and algorithm specific hyperparameters can be set in their own
-agent file.
+Set common hyperparameters in the `BaseAgent` class and algorithm-specific hyperparameters in their respective agent
+files.
 
 ## Algorithms Implemented
 
-- **DDQN (Double Deep Q-Network)**: An extension of DQN that reduces overestimation by decomposing the max operation in
-  the target into action selection and action evaluation. Since this algorithm is well-suited for discrete action spaces
-  the experiments used the next two algorithms.
+- **DDQN (Double Deep Q-Network):** This algorithm mitigates overestimation by decomposing the max operation in the
+  target into action selection and action evaluation. Though DDQN is better suited for discrete action spaces, our
+  experiments focus on the following two algorithms.
 
-- **TD3 (Twin Delayed DDPG)**: An algorithm that addresses the function approximation errors in actor-critic methods by
-  introducing twin Q-networks and delayed policy updates.
+- **TD3 (Twin Delayed DDPG):** TD3 rectifies function approximation errors in actor-critic methods by introducing twin
+  Q-networks and delayed policy updates.
 
-- **SAC (Soft Actor-Critic)**: An off-policy algorithm that optimizes a stochastic policy in an entropy-regularized
-  reinforcement learning framework, leading to a balance between exploration and exploitation.
+- **SAC (Soft Actor-Critic):** SAC is an off-policy algorithm that optimizes a stochastic policy within an
+  entropy-regularized reinforcement learning framework. This optimization encourages a balance between exploration and
+  exploitation.
 
 ## Environment
 
-The `Walker2d-v2` environment challenges agents to learn to walk forward without falling over, which involves a
-continuous state and action space.
+The `Walker2d-v2` environment presents a challenge for agents to learn to walk forward without falling. It features a
+continuous state and action space, requiring nuanced exploration strategies.
 
 ## Logging and Visualization
 
-Logging is set up to track various metrics during training, including rewards, episode length and neural networks
-losses, which can be visualized using TensorBoard:
+The logging system tracks various training metrics, including rewards, episode lengths, and neural network losses. These
+metrics can be visualized using TensorBoard:
 
 ```bash
 tensorboard --logdir=walker2d_tensorboard
@@ -60,9 +60,9 @@ tensorboard --logdir=walker2d_tensorboard
 
 ## Acknowledgements
 
-Parts of this codebase are inspired by and adapted from
-the [Stable Baselines3](https://github.com/DLR-RM/stable-baselines3) repository. I am grateful for their open-source
-contributions which were instrumental in the development of this project.
+Parts of this codebase draw inspiration and adaptation from
+the [Stable Baselines3](https://github.com/DLR-RM/stable-baselines3) repository. I am thankful for their open-source
+contributions, which were instrumental in the development of this project.
 
 ## License
 
