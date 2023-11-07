@@ -87,7 +87,7 @@ class TD3Agent(BaseAgent):
 
     def train(self):
         # Sample transitions from replay buffer
-        state, action, reward, next_state, done = self.replay_buffer.sample(self.batch_size)
+        state, action, reward, next_state, done = self.replay_buffer.sample(self.batch_size, device=self.device)
 
         # Compute the target Q value
         with torch.no_grad():

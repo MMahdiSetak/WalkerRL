@@ -44,7 +44,7 @@ class Algorithm(Enum):
 
 class BaseAgent:
     def __init__(self, alg, env, device="cuda", buffer_size=1_000_000, lr=3e-4, batch_size=256, discount=0.999,
-                 tau=0.005, save_interval=5e5):
+                 tau=0.005, save_interval=2e5):
         self.alg = alg
         self.writer = None
         self.env = env
@@ -55,9 +55,10 @@ class BaseAgent:
         self.discount = discount
         self.tau = tau
         self.save_interval = save_interval
-        self.num_steps = self.last_save = 0
+        self.num_steps = self.last_save = self.episode_length = self.episode_reward = 0
         self.save_path = ""
         self.actor = self.actor_optimizer = self.critic = self.critic_optimizer = self.critic_target = None
+        self.last_obs = None
 
         self.hparams = {
             'algorithm': self.alg.value,
@@ -106,22 +107,28 @@ class BaseAgent:
         self.num_steps += episode_len
         return episode_len
 
-    def interact_with_environment(self):
+    def interact_with_environment(self, steps=-1):
         """Interact with the environment and train the agent"""
-        state = self.env.reset()[0]
-        episode_len = episode_reward = 0
-        while True:
-            episode_len += 1
-            action = self.select_action(state)
+        if self.last_obs is None:
+            self.last_obs = self.env.reset()[0]
+        iteration = 0
+        while steps == -1 or iteration < steps:
+            iteration += 1
+            self.episode_length += 1
+            action = self.select_action(self.last_obs)
             next_state, reward, terminated, truncated, _ = self.env.step(action)
+            self.num_steps += 1
             done = terminated or truncated
-            episode_reward += reward
-            self.replay_buffer.push(state, action, reward, next_state, done)
-            state = next_state
+            self.episode_reward += reward
+            self.replay_buffer.push(self.last_obs, action, reward, next_state, done)
+            self.last_obs = next_state
             if done:
+                self.last_obs = self.env.reset()[0]
+                self.writer.add_scalar("episode/reward", self.episode_reward, self.num_steps)
+                self.writer.add_scalar("episode/length", self.episode_length, self.num_steps)
+                self.episode_length = 0
+                self.episode_reward = 0
                 break
-        self.num_steps += episode_len
-        return episode_len, episode_reward
 
     def learn(self, total_timesteps):
         self.save_path = get_run_directory(f"models/{self.alg.name}")
@@ -130,10 +137,8 @@ class BaseAgent:
         while self.num_steps < self.batch_size:
             self.populate_initial_buffer()
         while self.num_steps < total_timesteps:
-            episode_length, episode_reward = self.interact_with_environment()
+            self.interact_with_environment(steps=1)
             self.train()
-            self.writer.add_scalar("episode/reward", episode_reward, self.num_steps)
-            self.writer.add_scalar("episode/length", episode_length, self.num_steps)
             self.save_models()
         end = time.time()
         elapsed_time = end - start

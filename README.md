@@ -58,6 +58,14 @@ metrics can be visualized using TensorBoard:
 tensorboard --logdir=walker2d_tensorboard
 ```
 
+## Results
+
+This section showcases the performance of the reinforcement learning agent in the `Walker2d-v2` environment at various
+stages of training, from 2,000 to 1,000,000 iterations. The video below demonstrates the incremental learning process
+and the agent's improved ability to balance and walk as training progresses.
+
+https://github.com/MMahdiSetak/WalkerRL/assets/training.mp4
+
 ## Acknowledgements
 
 Parts of this codebase draw inspiration and adaptation from

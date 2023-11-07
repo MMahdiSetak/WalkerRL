@@ -109,12 +109,7 @@ class SACAgent(BaseAgent):
 
     def train(self):
         # Sample transitions from replay buffer
-        batch = self.replay_buffer.sample(self.batch_size)
-        state = torch.FloatTensor(np.array(batch.state)).to(self.device)
-        action = torch.FloatTensor(np.array(batch.action)).to(self.device)
-        reward = torch.FloatTensor(batch.reward).to(self.device).unsqueeze(1)
-        next_state = torch.FloatTensor(np.array(batch.next_state)).to(self.device)
-        done = torch.FloatTensor(batch.done).to(self.device).unsqueeze(1)
+        state, action, reward, next_state, done = self.replay_buffer.sample(self.batch_size, device=self.device)
 
         actions_pi, log_prob = self.actor.action_log_prob(state)
         log_prob = log_prob.reshape(-1, 1)
